@@ -7,7 +7,7 @@
 
  # Planning:
  - Setting up Flame: 30m
- - 
+
  (I've never worked with it before. It was nice to learn a new engine.)
  
  - Designing/planning scope: 5m
