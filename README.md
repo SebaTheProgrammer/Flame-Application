@@ -6,10 +6,10 @@
  If you have any questions, please don't hesitate to contact me!
 
  # Planning:
- Setting up Flame: 30m
+ - Setting up Flame: 30m
  (I've never worked with it before. It was nice to learn a new engine.)
  
- Designing/planning scope: 5m
+ - Designing/planning scope: 5m
  
- Making base character: 1h
+ - Making base character: 1h
  
