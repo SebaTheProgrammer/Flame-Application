@@ -13,5 +13,14 @@
  
  - Designing/planning scope: 5m
  
- - Making base character: 1h
+ - Making base character: 30m
+ - Healthcomponent: 20m
+ 
+ - Adding paralax: 10m
+
+ - Enemies: 1h
+
+ - Collision: 10m
+
+ - Game loop: 20m
  
