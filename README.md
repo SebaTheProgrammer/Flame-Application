@@ -1,7 +1,7 @@
 # Flame Application Internship
  This is a small 2D-web-game for a coding test for a possible amazing internship at the Dutch Game Studio!
  
- I can only work a maximum of 8 hours on this, so the scope will be pretty small.
+ I can only work a maximum of 8 hours on this, so the scope will be pretty small. And I just arrived on Erasmus, but I tried to make time free for this!
 
  That's why I chose a piece of the game Cuphead!
  
