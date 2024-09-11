@@ -8,7 +8,7 @@ class Cuphead extends FlameGame {
 
   int startHealth = 3;
   double frameTime = 0.06;
-  Vector2 startPos = Vector2(200, 500);
+  Vector2 position = Vector2(200, 500);
   double sizeCuphead = 150;
   double gravity = 1700;
   double jumpHeight = -1000;
@@ -35,8 +35,8 @@ class Cuphead extends FlameGame {
     if (isJumping) {
       velocityY += gravity * dt;
       _jumpAnimation.position.y += velocityY * dt;
-      if (_jumpAnimation.position.y >= startPos.y) {
-        _jumpAnimation.position.y = startPos.y;
+      if (_jumpAnimation.position.y >= position.y) {
+        _jumpAnimation.position.y = position.y;
         isJumping = false;
         velocityY = 0;
         remove(_jumpAnimation);
@@ -45,12 +45,19 @@ class Cuphead extends FlameGame {
     }
   }
 
+  void move(Vector2 delta) {
+    position += delta;
+    _runAnimation.position = position;
+    _jumpAnimation.position.x = position.x;
+  }
+
   void jump() {
     if (!isJumping) {
       remove(_runAnimation);
       add(_jumpAnimation);
       velocityY = jumpHeight;
       isJumping = true;
+      _jumpAnimation.position = position;
     }
   }
 
@@ -86,7 +93,7 @@ class Cuphead extends FlameGame {
     _runAnimation = SpriteAnimationComponent()
       ..animation = combinedAnimationRun
       ..size = Vector2.all(sizeCuphead)
-      ..position = startPos;
+      ..position = position;
 
     add(_runAnimation);
 
@@ -120,6 +127,6 @@ class Cuphead extends FlameGame {
     _jumpAnimation = SpriteAnimationComponent()
       ..animation = combinedAnimationJump
       ..size = Vector2.all(sizeCuphead - 20)
-      ..position = startPos;
+      ..position = position;
   }
 }
