@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 
-class Parallax extends FlameGame {
+class ParallaxBackground extends FlameGame {
   late ParallaxComponent skyParallax;
   late ParallaxComponent farHillsParallax;
   late ParallaxComponent closeHillsParallax;
@@ -32,7 +32,7 @@ class Parallax extends FlameGame {
       [ParallaxImageData('CloseHillsLoop.png')],
       baseVelocity: Vector2(speedCloseHills, 0),
     );
-    closeHillsParallax.scale = Vector2(1, 0.3);
+    closeHillsParallax.scale = Vector2(1, 0.4);
     closeHillsParallax.position = Vector2(0, 350);
 
     groundParallax = await loadParallaxComponent(
@@ -46,5 +46,31 @@ class Parallax extends FlameGame {
     add(farHillsParallax);
     add(closeHillsParallax);
     add(groundParallax);
+  }
+}
+
+class ParallaxForeground extends FlameGame {
+  late ParallaxComponent foregroundParallax;
+  late ParallaxComponent foreground2Parallax;
+  double speedForeGround = 275;
+
+  @override
+  Future<void> onLoad() async {
+    foregroundParallax = await loadParallaxComponent(
+      [ParallaxImageData('ForeGroundLoop.png')],
+      baseVelocity: Vector2(speedForeGround, 0),
+    );
+    foregroundParallax.position = Vector2(0, -115);
+    foregroundParallax.scale = Vector2(1, 1.2);
+
+    foreground2Parallax = await loadParallaxComponent(
+      [ParallaxImageData('ForeGroundLoop2.png')],
+      baseVelocity: Vector2(speedForeGround + 10, 0),
+    );
+    foreground2Parallax.position = Vector2(0, -250);
+    foreground2Parallax.scale = Vector2(1, 1.4);
+
+    add(foregroundParallax);
+    add(foreground2Parallax);
   }
 }

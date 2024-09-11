@@ -1,4 +1,5 @@
 import 'package:Cuphead_application/TheGame/Cuphead.dart';
+import 'package:Cuphead_application/TheGame/HealthComponent.dart';
 import 'package:Cuphead_application/TheGame/Paralax.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -6,14 +7,24 @@ import 'package:flutter/material.dart';
 
 class CupheadGame extends FlameGame with TapDetector {
   late Cuphead _cuphead;
-  late Parallax _parallax;
+  late ParallaxBackground _parallax;
+  late ParallaxForeground _parallaxForeground;
+  late HealthComponent _healthComponent;
+
   @override
   Future<void> onLoad() async {
     _cuphead = Cuphead();
-    _parallax = Parallax();
-
+    _parallax = ParallaxBackground();
+    _parallaxForeground = ParallaxForeground();
+    _healthComponent = HealthComponent(images);
     add(_parallax);
     add(_cuphead);
+    add(_parallaxForeground);
+    add(_healthComponent);
+
+    await _healthComponent.onLoad();
+    _healthComponent
+        .updateHealth(_cuphead.getHealth() + 2); //+2 for spritesheet
   }
 
   @override

@@ -1,56 +1,44 @@
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
-import 'package:flame/flame.dart';
 
-class Healthcomponent extends FlameGame {
-  late SpriteAnimationComponent _healthAnimation;
-  double sizeHealth = 150;
-  Vector2 pos = Vector2(200, 500);
+class HealthComponent extends PositionComponent {
+  late SpriteComponent _healthSprite;
+  late List<Sprite> healthSprites;
+  double sizeHealth = 100;
+  Vector2 pos = Vector2(0, 0);
+  final Images images;
 
-  void setHealth(int index) {
-    if (_healthAnimation.animation != null &&
-        index >= 0 &&
-        index < _healthAnimation.animation!.frames.length) {
-      _healthAnimation.animation!.currentIndex = index;
+  HealthComponent(this.images);
+
+  Future<void> updateHealth(int index) async {
+    if (index >= 0 && index < healthSprites.length) {
+      _healthSprite.sprite = healthSprites[index];
     }
   }
 
   @override
   Future<void> onLoad() async {
     final spriteSheetImageHealth = await images.load('Health.png');
-
     final double frameWidth = spriteSheetImageHealth.width / 6;
     final double frameHeight = spriteSheetImageHealth.height / 2;
-
     final spriteSheetHealth = SpriteSheet(
       image: spriteSheetImageHealth,
       srcSize: Vector2(frameWidth, frameHeight),
     );
 
-    final List<Sprite> sprites = [];
-
+    healthSprites = [];
     for (int row = 0; row < 2; row++) {
       for (int column = 0; column < 6; column++) {
-        sprites.add(spriteSheetHealth.getSprite(column, row));
+        healthSprites.add(spriteSheetHealth.getSprite(row, column));
       }
     }
 
-    final combinedAnimation = SpriteAnimation.spriteList(
-      sprites,
-      stepTime: 0,
-      loop: false,
-    );
-
-    _healthAnimation = SpriteAnimationComponent()
-      ..animation = combinedAnimation
+    _healthSprite = SpriteComponent()
+      ..sprite = healthSprites[0]
       ..size = Vector2.all(sizeHealth)
       ..position = pos;
 
-    add(_healthAnimation);
+    add(_healthSprite);
   }
-}
-
-extension on SpriteAnimation {
-  set currentIndex(int currentIndex) {}
 }

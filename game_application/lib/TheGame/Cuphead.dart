@@ -1,21 +1,17 @@
-import 'package:Cuphead_application/TheGame/HealthComponent.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 
 class Cuphead extends FlameGame {
-  Healthcomponent healthcomponent = Healthcomponent();
-
   late SpriteAnimationComponent _runAnimation;
   late SpriteAnimationComponent _jumpAnimation;
-  late Healthcomponent _healthComponent;
 
   int startHealth = 3;
   double frameTime = 0.06;
   Vector2 startPos = Vector2(200, 500);
   double sizeCuphead = 150;
-  double gravity = 1000;
-  double jumpHeight = -750;
+  double gravity = 1700;
+  double jumpHeight = -1000;
   double velocityY = 0;
   bool isJumping = false;
 
@@ -25,10 +21,17 @@ class Cuphead extends FlameGame {
   int spriteSheetColumnsJump = 3;
   int spriteSheetRowsJump = 3;
 
+  int getHealth() {
+    return startHealth;
+  }
+
+  void setHealth(int health) {
+    startHealth = health;
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
-
     if (isJumping) {
       velocityY += gravity * dt;
       _jumpAnimation.position.y += velocityY * dt;
@@ -53,8 +56,6 @@ class Cuphead extends FlameGame {
 
   @override
   Future<void> onLoad() async {
-    _healthComponent = Healthcomponent();
-    add(_healthComponent);
     // RUN ANIMATION
     final spriteSheetImageRun = await images.load('Run.png');
 
