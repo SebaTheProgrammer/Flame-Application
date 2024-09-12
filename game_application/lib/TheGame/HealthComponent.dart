@@ -5,15 +5,19 @@ import 'package:flame/sprite.dart';
 class HealthComponent extends PositionComponent {
   late SpriteComponent _healthSprite;
   late List<Sprite> healthSprites;
-  double sizeHealth = 100;
-  Vector2 pos = Vector2(0, 0);
+  double sizeHealth = 50;
+  Vector2 pos = Vector2(25, 25);
   final Images images;
 
   HealthComponent(this.images);
 
   Future<void> updateHealth(int index) async {
     if (index >= 0 && index < healthSprites.length) {
-      _healthSprite.sprite = healthSprites[index];
+      if (index == 2) {
+        _healthSprite.sprite = healthSprites[0];
+      } else {
+        _healthSprite.sprite = healthSprites[index];
+      }
     }
   }
 
@@ -36,7 +40,7 @@ class HealthComponent extends PositionComponent {
 
     _healthSprite = SpriteComponent()
       ..sprite = healthSprites[0]
-      ..size = Vector2.all(sizeHealth)
+      ..size = Vector2(sizeHealth * 2, sizeHealth)
       ..position = pos;
 
     add(_healthSprite);

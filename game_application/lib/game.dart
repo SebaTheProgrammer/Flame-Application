@@ -34,7 +34,7 @@ class CupheadGame extends FlameGame with KeyboardEvents {
   void update(double dt) {
     super.update(dt);
     // Game logic update
-    handleMovement(dt);
+    _cuphead.handleMovement(_pressedKeys, dt);
   }
 
   @override
@@ -43,37 +43,21 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     // Game rendering
   }
 
-  void handleMovement(double dt) {
-    double movementSpeed = 200 * dt;
-
-    final Vector2 movement = Vector2.zero();
-
-    if (_pressedKeys.contains(LogicalKeyboardKey.keyW)) {
-      movement.y -= movementSpeed;
-    }
-    if (_pressedKeys.contains(LogicalKeyboardKey.keyS)) {
-      movement.y += movementSpeed;
-    }
-    if (_pressedKeys.contains(LogicalKeyboardKey.keyA)) {
-      movement.x -= movementSpeed;
-    }
-    if (_pressedKeys.contains(LogicalKeyboardKey.keyD)) {
-      movement.x += movementSpeed;
-    }
-    if (_pressedKeys.contains(LogicalKeyboardKey.space)) {
-      _cuphead.jump();
-    }
-
-    if (movement != Vector2.zero()) {
-      _cuphead.move(movement);
-    }
-  }
-
   @override
   KeyEventResult onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keys) {
     super.onKeyEvent(event, keys);
     if (event is KeyDownEvent) {
       _pressedKeys.add(event.logicalKey);
+
+      //Damage Cuphead
+      if (_pressedKeys.contains(LogicalKeyboardKey.keyH)) {
+        _cuphead.setHealth(_cuphead.getHealth() - 1);
+        _healthComponent.updateHealth(_cuphead.getHealth() + 2);
+
+        if (_cuphead.getHealth() == 0) {
+          //stop game
+        }
+      }
     } else if (event is KeyUpEvent) {
       _pressedKeys.remove(event.logicalKey);
     }
