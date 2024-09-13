@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:Cuphead_application/TheGame/EnemyPool.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:Cuphead_application/TheGame/Balloon.dart';
@@ -14,6 +15,8 @@ class EnemySpawner extends Component {
   late List<Sprite> _greenBalloonSprites;
   late List<Sprite> _pinkBalloonSprites;
 
+  late BalloonPool balloonPool;
+
   EnemySpawner({
     required this.screenSize,
     this.spawnInterval = 3.0,
@@ -25,6 +28,14 @@ class EnemySpawner extends Component {
     _blueBalloonSprites = await _loadBalloonSprites(34, 'boy');
     _greenBalloonSprites = await _loadBalloonSprites(52, 'girl');
     _pinkBalloonSprites = await _loadBalloonSprites(52, 'pink');
+
+    final defaultAnimation = SpriteAnimation.spriteList(
+      _blueBalloonSprites,
+      stepTime: 0.1,
+      loop: true,
+    );
+
+    balloonPool = BalloonPool(defaultAnimation);
 
     return super.onLoad();
   }
@@ -82,16 +93,15 @@ class EnemySpawner extends Component {
     final double frequency = 2.0 + _random.nextDouble() * 2.0;
     final double speed = 100.0 + _random.nextDouble() * 150.0;
 
-    final balloon = Balloon(
-      position: Vector2(startX, startY),
-      size: Vector2(200, 200),
-      animation: balloonAnimation,
-      amplitude: amplitude,
-      frequency: frequency,
-      maxY: screenSize.y - 100,
-      minY: startY,
-      speed: speed,
-    );
+    final balloon = balloonPool.acquire();
+    balloon
+      ..position = Vector2(startX, startY)
+      ..animation = balloonAnimation
+      ..amplitude = amplitude
+      ..frequency = frequency
+      ..maxY = screenSize.y - 100
+      ..minY = startY
+      ..speed = speed;
 
     add(balloon);
   }

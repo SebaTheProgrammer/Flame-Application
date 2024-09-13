@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 
 class Bullet extends SpriteAnimationComponent with HasGameRef {
   final double speed;
@@ -32,5 +33,10 @@ class Bullet extends SpriteAnimationComponent with HasGameRef {
       isOffScreen = true;
       removeFromParent();
     }
+  }
+
+  @override
+  Rect toRect() {
+    return Rect.fromLTWH(position.x, position.y, 300, 200);
   }
 }

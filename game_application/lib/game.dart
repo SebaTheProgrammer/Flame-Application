@@ -63,34 +63,29 @@ class CupheadGame extends FlameGame with KeyboardEvents {
 
   void checkCollisions() {
     final cupheadRect = _cuphead.toRect();
-    final children = _enemySpawner.children;
+    final balloons = _enemySpawner.children.whereType<Balloon>().toList();
 
-    for (final component in children) {
-      if (component is Balloon) {
-        final balloonRect = component.toRect();
+    for (final balloon in balloons) {
+      final balloonRect = balloon.toRect();
 
-        if (cupheadRect.overlaps(balloonRect)) {
-          _cuphead
-              .setHealth(_cuphead.getHealth() - 1); //or getDamage() from enemy
-          _healthComponent
-              .updateHealth(_cuphead.getHealth() + 2); //+2 for spritesheet
+      if (cupheadRect.overlaps(balloonRect)) {
+        _cuphead
+            .setHealth(_cuphead.getHealth() - 1); //or getDamage() from enemy
+        _healthComponent
+            .updateHealth(_cuphead.getHealth() + 2); //+2 for spritesheet
+        balloon.kill();
 
-          component.kill();
-
-          if (_cuphead.getHealth() == 0) {
-            pauseGame();
-          }
+        if (_cuphead.getHealth() == 0) {
+          pauseGame();
         }
+      }
 
-        for (final bullet in _cuphead.children) {
-          if (bullet is Bullet) {
-            final bulletRect = bullet.toRect();
+      for (final bullet in _cuphead.children.whereType<Bullet>()) {
+        final bulletRect = bullet.toRect();
 
-            if (bulletRect.overlaps(balloonRect)) {
-              bullet.removeFromParent();
-              component.kill();
-            }
-          }
+        if (bulletRect.overlaps(balloonRect)) {
+          bullet.removeFromParent();
+          balloon.kill();
         }
       }
     }
@@ -109,10 +104,9 @@ class CupheadGame extends FlameGame with KeyboardEvents {
       }
     }
 
-    _cuphead.setHealth(_cuphead.startHealth);
+    _cuphead.resetCuphead();
     _healthComponent
-        .updateHealth(_cuphead.startHealth + 2); //+2 for spritesheet
-    _cuphead.position = _cuphead.startPosition;
+        .updateHealth(_cuphead.getHealth() + 2); //+2 for spritesheet
 
     _pressedKeys.clear();
 

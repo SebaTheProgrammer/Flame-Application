@@ -220,11 +220,21 @@ class Cuphead extends FlameGame with HasGameRef {
 
   Rect toRect() {
     if (!isJumping) {
-      return Rect.fromLTWH(position.x, position.y, 35, 70);
+      return Rect.fromLTWH(position.x, position.y, 20, 40);
     } else {
       return Rect.fromLTWH(
-          _jumpAnimation.position.x, _jumpAnimation.position.y, 35, 70);
+          _jumpAnimation.position.x, _jumpAnimation.position.y, 20, 40);
     }
+  }
+
+  void resetCuphead() {
+    position = startPosition;
+    health = startHealth;
+    _runAnimation.position = position;
+    _jumpAnimation.position = position;
+    _shootAnimation.position = position;
+    changeState(CupheadState.run);
+    isLookingLeft = false;
   }
 
   @override
