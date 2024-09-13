@@ -4,5 +4,23 @@ import 'package:flutter/material.dart';
 
 void main() {
   var game = CupheadGame();
-  runApp(GameWidget(game: game));
+
+  runApp(
+    GameWidget(
+      game: game,
+      overlayBuilderMap: {
+        'RestartButton': (BuildContext context, CupheadGame game) {
+          return Center(
+            child: ElevatedButton(
+              onPressed: () {
+                game.restartGame();
+              },
+              child: Text('Restart'),
+            ),
+          );
+        },
+      },
+      initialActiveOverlays: const [],
+    ),
+  );
 }

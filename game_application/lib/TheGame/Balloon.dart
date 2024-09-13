@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
+import 'package:flutter/material.dart';
 
 class Balloon extends SpriteAnimationComponent {
   late double amplitude;
@@ -46,5 +46,10 @@ class Balloon extends SpriteAnimationComponent {
   void kill() {
     isDead = true;
     removeFromParent();
+  }
+
+  @override
+  Rect toRect() {
+    return Rect.fromLTWH(position.x, position.y, size.x, size.y);
   }
 }

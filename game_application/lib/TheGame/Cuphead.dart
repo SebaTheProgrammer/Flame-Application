@@ -12,8 +12,11 @@ class Cuphead extends FlameGame with HasGameRef {
   late SpriteAnimationComponent _shootAnimation;
 
   int startHealth = 3;
+  int health = 3;
   double movementSpeed = 300;
-  Vector2 position = Vector2(200, 500);
+  double movementSpeedLeft = 500;
+  Vector2 startPosition = Vector2(200, 500);
+  Vector2 position = Vector2.zero();
   static const double gravity = 1700;
   static const double jumpHeight = -1000;
   static const double frameTime = 0.06;
@@ -40,11 +43,11 @@ class Cuphead extends FlameGame with HasGameRef {
   CupheadState currentState = CupheadState.run;
 
   int getHealth() {
-    return startHealth;
+    return health;
   }
 
-  void setHealth(int health) {
-    startHealth = health;
+  void setHealth(int newhealth) {
+    health = newhealth;
   }
 
   @override
@@ -116,7 +119,9 @@ class Cuphead extends FlameGame with HasGameRef {
       movement.y += speed;
     }
     if (pressedKeys.contains(LogicalKeyboardKey.keyA)) {
-      movement.x -= speed;
+      //design wise so with the paralax you can see the character moving
+      final double leftSpeed = movementSpeedLeft * dt;
+      movement.x -= leftSpeed;
       isLookingLeft = true;
       _runAnimation.scale.x = -1;
       _jumpAnimation.scale.x = -1;
@@ -213,8 +218,18 @@ class Cuphead extends FlameGame with HasGameRef {
     }
   }
 
+  Rect toRect() {
+    if (!isJumping) {
+      return Rect.fromLTWH(position.x, position.y, 35, 70);
+    } else {
+      return Rect.fromLTWH(
+          _jumpAnimation.position.x, _jumpAnimation.position.y, 35, 70);
+    }
+  }
+
   @override
   Future<void> onLoad() async {
+    position = startPosition;
     // Helper function to create animations
     Future<SpriteAnimationComponent> createAnimation(
         String fileName, int rows, int columns, double size,
