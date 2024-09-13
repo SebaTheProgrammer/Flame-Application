@@ -1,6 +1,7 @@
 import 'package:Cuphead_application/TheGame/Cuphead.dart';
 import 'package:Cuphead_application/TheGame/HealthComponent.dart';
 import 'package:Cuphead_application/TheGame/Paralax.dart';
+import 'package:Cuphead_application/TheGame/EnemySpawner.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ class CupheadGame extends FlameGame with KeyboardEvents {
   late ParallaxBackground _parallax;
   late ParallaxForeground _parallaxForeground;
   late HealthComponent _healthComponent;
+  late EnemySpawner _enemySpawner;
 
   final Set<LogicalKeyboardKey> _pressedKeys = {};
 
@@ -20,8 +22,12 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     _parallax = ParallaxBackground();
     _parallaxForeground = ParallaxForeground();
     _healthComponent = HealthComponent(images);
+
+    _enemySpawner = EnemySpawner(screenSize: size, images: images);
+
     add(_parallax);
     add(_cuphead);
+    add(_enemySpawner);
     add(_parallaxForeground);
     add(_healthComponent);
 
@@ -49,7 +55,6 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     if (event is KeyDownEvent) {
       _pressedKeys.add(event.logicalKey);
 
-      //Damage Cuphead
       if (_pressedKeys.contains(LogicalKeyboardKey.keyH)) {
         _cuphead.setHealth(_cuphead.getHealth() - 1);
         _healthComponent.updateHealth(_cuphead.getHealth() + 2);

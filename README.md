@@ -13,14 +13,16 @@
  
  - Designing/planning scope: 5m
  
- - Making base character: 30m
- - Healthcomponent: 20m
+ - Making base character: 30m || took around 40m
+ - Healthcomponent: 20m || took around 10m
  
- - Adding paralax: 10m
+ - Adding paralax: 10m 
 
- - Enemies: 1h
+ - Enemies: 1h || took around 45m
 
- - Collision: 10m
+ - Collision: 10m   
 
  - Game loop: 20m
+
+ - TODO: read checklist again and add particles, ect.
  
