@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:Cuphead_application/TheGame/EnemyPool.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
-import 'package:Cuphead_application/TheGame/Balloon.dart';
 
 class EnemySpawner extends Component {
   final Vector2 screenSize;

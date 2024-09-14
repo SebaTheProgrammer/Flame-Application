@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 void main() {
   var game = CupheadGame();
-
   runApp(
     GameWidget(
       game: game,

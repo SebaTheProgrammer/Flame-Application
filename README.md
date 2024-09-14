@@ -22,7 +22,11 @@
 
  - Collision: 10m   
 
- - Game loop: 20m
+ - Game loop: 20m || took around 30m
+
+ - Particles: 20m
+
+ - Sound: 40m || took around 1h 20m
 
  - TODO: read checklist again and add particles, ect.
  

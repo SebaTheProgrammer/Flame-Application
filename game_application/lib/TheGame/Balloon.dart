@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flame/components.dart';
+import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 
 class Balloon extends SpriteAnimationComponent {
@@ -35,6 +36,10 @@ class Balloon extends SpriteAnimationComponent {
 
     position.x -= speed * dt;
 
+    if (isDead) {
+      return;
+    }
+
     time += dt;
     position.y = minY + amplitude * sin(frequency * time);
 
@@ -45,11 +50,42 @@ class Balloon extends SpriteAnimationComponent {
 
   void kill() {
     isDead = true;
-    removeFromParent();
+
+    final paint = Paint()..color = Color(0xFFFF0000);
+
+    final particleComponent = ParticleSystemComponent(
+      particle: Particle.generate(
+        count: 25,
+        lifespan: 1.0,
+        generator: (i) {
+          final initialPosition = Vector2(75, 75);
+          final speed = (Vector2.random() - Vector2.all(0.5)) * 100;
+
+          return ComputedParticle(
+            lifespan: 1.0,
+            renderer: (canvas, particleLifespan) {
+              final position =
+                  initialPosition + speed * particleLifespan.progress;
+
+              canvas.drawCircle(Offset(position.x, position.y), 15, paint);
+            },
+          );
+        },
+      ),
+    );
+
+    add(particleComponent);
+
+    Future.delayed(Duration(seconds: 1), () {
+      removeFromParent();
+    });
   }
 
   @override
   Rect toRect() {
+    if (isDead) {
+      return Rect.zero;
+    }
     return Rect.fromLTWH(position.x, position.y, size.x, size.y);
   }
 }

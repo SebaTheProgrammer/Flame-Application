@@ -4,6 +4,7 @@ import 'package:Cuphead_application/TheGame/Cuphead.dart';
 import 'package:Cuphead_application/TheGame/HealthComponent.dart';
 import 'package:Cuphead_application/TheGame/Paralax.dart';
 import 'package:Cuphead_application/TheGame/EnemySpawner.dart';
+import 'package:Cuphead_application/TheGame/SoundManager.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,9 +19,13 @@ class CupheadGame extends FlameGame with KeyboardEvents {
 
   final Set<LogicalKeyboardKey> _pressedKeys = {};
   bool isGamePaused = false;
+  double time = 0;
+  bool test = true;
 
   @override
   Future<void> onLoad() async {
+    await SoundManager.instance.initialize();
+
     _cuphead = Cuphead();
     _parallax = ParallaxBackground();
     _parallaxForeground = ParallaxForeground();
@@ -42,16 +47,22 @@ class CupheadGame extends FlameGame with KeyboardEvents {
   @override
   void update(double dt) {
     if (isGamePaused) return;
+    time += dt;
 
     super.update(dt);
     _cuphead.handleMovement(_pressedKeys, dt);
     checkCollisions();
+
+    //because of the large sound file, it will only play after 10 seconds, playing when done loading doesn't work ://
+    if (time > 10 && test) {
+      test = false;
+      SoundManager.instance.playSound('Level.mp3');
+    }
   }
 
   @override
   KeyEventResult onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keys) {
     if (isGamePaused) return KeyEventResult.handled;
-
     super.onKeyEvent(event, keys);
     if (event is KeyDownEvent) {
       _pressedKeys.add(event.logicalKey);

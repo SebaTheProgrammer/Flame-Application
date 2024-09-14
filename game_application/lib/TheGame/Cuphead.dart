@@ -235,6 +235,7 @@ class Cuphead extends FlameGame with HasGameRef {
     _shootAnimation.position = position;
     changeState(CupheadState.run);
     isLookingLeft = false;
+    isJumping = false;
   }
 
   @override
