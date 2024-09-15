@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:Cuphead_application/TheGame/Extra/SoundManager.dart';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class Balloon extends SpriteAnimationComponent {
 
   void die() {
     isDead = true;
-
+    SoundManager.instance.playSoundEffect('BalloonDeath.wav');
     // Spawn particles/blood
     final paint = Paint()..color = Color(0xFFFF0000);
 

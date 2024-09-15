@@ -6,18 +6,18 @@ class SoundManager {
 
   SoundManager._();
 
-  bool _playingMusic = false;
+  bool _isBackgroundMusicPlaying = false;
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
   Future<void> initialize() async {
     try {
-      // Load all audio files
       await FlameAudio.audioCache.loadAll([
+        'Fire.wav',
+        'BalloonDeath.wav',
         'Level.mp3',
       ]);
 
-      // Initialize background music
       FlameAudio.bgm.initialize();
 
       _isInitialized = true;
@@ -26,34 +26,47 @@ class SoundManager {
     }
   }
 
-  Future<void> playSound(String sound) async {
+  Future<void> _playSound(String sound,
+      {bool isBackground = false, bool loop = false}) async {
     if (!_isInitialized) {
       print('SoundManager not initialized.');
       return;
     }
 
     try {
-      if (!_playingMusic) {
-        if (FlameAudio.audioCache.loadedFiles.containsKey(sound)) {
-          await FlameAudio.loopLongAudio(sound);
-          _playingMusic = true;
+      if (FlameAudio.audioCache.loadedFiles.containsKey(sound)) {
+        if (isBackground) {
+          if (!_isBackgroundMusicPlaying) {
+            if (loop) {
+              await FlameAudio.loopLongAudio(sound);
+            } else {
+              await FlameAudio.playLongAudio(sound);
+            }
+            _isBackgroundMusicPlaying = true;
+          }
         } else {
-          print('Sound file $sound is not loaded.');
+          await FlameAudio.play(sound);
         }
+      } else {
+        print('Sound file $sound is not loaded.');
       }
     } catch (e) {
       print('Error playing sound: $e');
     }
   }
 
-  void stopMusic() {
-    if (_playingMusic) {
-      try {
-        FlameAudio.bgm.stop();
-        _playingMusic = false;
-      } catch (e) {
-        print('Error stopping music: $e');
-      }
+  Future<void> playSoundEffect(String sound) async {
+    await _playSound(sound);
+  }
+
+  Future<void> playBackgroundMusic(String sound, bool loop) async {
+    await _playSound(sound, isBackground: true, loop: loop);
+  }
+
+  void stopBackgroundMusic() {
+    if (_isBackgroundMusicPlaying) {
+      FlameAudio.bgm.stop();
+      _isBackgroundMusicPlaying = false;
     }
   }
 }

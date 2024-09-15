@@ -1,4 +1,5 @@
 import 'package:Cuphead_application/TheGame/Entities/Bullet.dart';
+import 'package:Cuphead_application/TheGame/Extra/SoundManager.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
@@ -40,6 +41,9 @@ class Cuphead extends FlameGame with HasGameRef {
   static const double _minY = 475;
   static const double _maxY = 800;
 
+  final List<Bullet> _bulletPool = [];
+  final int _initialPoolSize = 10;
+
   CupheadState _currentState = CupheadState.run;
 
   int getHealth() {
@@ -53,6 +57,12 @@ class Cuphead extends FlameGame with HasGameRef {
   @override
   void update(double dt) {
     super.update(dt);
+
+    for (var bullet in children.whereType<Bullet>()) {
+      if (bullet.isOffScreen) {
+        _returnBulletToPool(bullet);
+      }
+    }
 
     // Handle different states
     switch (_currentState) {
@@ -188,13 +198,13 @@ class Cuphead extends FlameGame with HasGameRef {
     }
   }
 
-  void _shoot(double currentTime) async {
-    if (!_isJumping && (currentTime - _lastShotTime) >= _timeBetweenShots) {
-      _isShooting = true;
-      _changeState(CupheadState.shoot);
-
+  Bullet _getBullet(Vector2 position, bool isFacingLeft) {
+    Bullet bullet;
+    if (_bulletPool.isNotEmpty) {
+      bullet = _bulletPool.removeLast();
+    } else {
       final spriteSheet = SpriteSheet(
-        image: await images.load('Bullet.png'),
+        image: images.fromCache('Bullet.png'),
         srcSize: Vector2(1188 / 8, 54),
       );
 
@@ -204,19 +214,40 @@ class Cuphead extends FlameGame with HasGameRef {
         to: 8,
       );
 
-      final bullet = Bullet(
-          position: Vector2(
-              _position.x +
-                  (_isLookingLeft ? _sizeCuphead / 4 : -_sizeCuphead / 4),
-              _position.y),
-          size: Vector2(100, 50),
-          animation: bulletAnimation,
-          isFacingLeft: _isLookingLeft);
+      bullet = Bullet(
+        position: position,
+        size: Vector2(100, 50),
+        animation: bulletAnimation,
+        isFacingLeft: isFacingLeft,
+      );
+    }
 
-      add(bullet);
+    bullet.position = position;
+    bullet.isFacingLeft = isFacingLeft;
+    bullet.addToParent(this);
+    return bullet;
+  }
 
+  void _shoot(double currentTime) {
+    if (!_isJumping && (currentTime - _lastShotTime) >= _timeBetweenShots) {
+      _isShooting = true;
+
+      SoundManager.instance.playSoundEffect('Fire.wav');
+      _changeState(CupheadState.shoot);
+
+      final bulletPosition = Vector2(
+        _position.x + (_isLookingLeft ? -_sizeCuphead / 4 : _sizeCuphead / 4),
+        _position.y,
+      );
+
+      _getBullet(bulletPosition, _isLookingLeft);
       _lastShotTime = currentTime;
     }
+  }
+
+  void _returnBulletToPool(Bullet bullet) {
+    bullet.removeFromParent();
+    _bulletPool.add(bullet);
   }
 
   Rect toRect() {
@@ -242,6 +273,7 @@ class Cuphead extends FlameGame with HasGameRef {
   @override
   Future<void> onLoad() async {
     _position = _startPosition;
+    _initializeBulletPool();
     // Helper function to create animations
     Future<SpriteAnimationComponent> _createAnimation(
         String fileName, int rows, int columns, double size,
@@ -289,5 +321,30 @@ class Cuphead extends FlameGame with HasGameRef {
 
     _shootAnimation = await _createAnimation(
         'Shoot', _spriteSheetRowsShoot, _spriteSheetColumnsShoot, _sizeCuphead);
+  }
+
+  void _initializeBulletPool() async {
+    for (int i = 0; i < _initialPoolSize; i++) {
+      final spriteSheet = SpriteSheet(
+        image: await images.load('Bullet.png'),
+        srcSize: Vector2(1188 / 8, 54),
+      );
+
+      final bulletAnimation = spriteSheet.createAnimation(
+        row: 0,
+        stepTime: 0.1,
+        to: 8,
+      );
+
+      final bullet = Bullet(
+        position: Vector2.zero(),
+        size: Vector2(100, 50),
+        animation: bulletAnimation,
+        isFacingLeft: false,
+      );
+
+      bullet.removeFromParent();
+      _bulletPool.add(bullet);
+    }
   }
 }

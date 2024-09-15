@@ -62,7 +62,7 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     //because of the large sound file, it will only play after 10 seconds, playing when done loading doesn't work ://
     if (time > 10 && test) {
       test = false;
-      //SoundManager.instance.playSound('Level.mp3');
+      SoundManager.instance.playBackgroundMusic('Level.mp3', true);
     }
   }
 
