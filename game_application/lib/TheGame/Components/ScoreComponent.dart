@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flame/components.dart';
 
 class ScoreComponent extends TextComponent {

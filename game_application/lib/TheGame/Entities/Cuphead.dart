@@ -119,7 +119,7 @@ class Cuphead extends FlameGame with HasGameRef {
       movement.y += speed;
     }
     if (pressedKeys.contains(LogicalKeyboardKey.keyA)) {
-      //design wise so with the paralax you can see the character moving
+      // design wise: to the left faster, so with the paralax you can see the character moving
       final double leftSpeed = _movementSpeedLeft * dt;
       movement.x -= leftSpeed;
       _isLookingLeft = true;

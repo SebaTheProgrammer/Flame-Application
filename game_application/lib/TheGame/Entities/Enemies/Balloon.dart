@@ -76,6 +76,7 @@ class Balloon extends SpriteAnimationComponent {
   void die() {
     isDead = true;
 
+    // Spawn particles/blood
     final paint = Paint()..color = Color(0xFFFF0000);
 
     final particleComponent = ParticleSystemComponent(
