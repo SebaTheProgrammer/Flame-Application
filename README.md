@@ -3,9 +3,20 @@
  
  I can only work a maximum of 8 hours on this, so the scope will be pretty small. (I also just arrived on Erasmus, but I tried to make time for this!)
 
- That's why I chose a piece of the game Cuphead! I've made a previous C++ version of it, so why not now showing that I can remake a piece in Flame?
+ That's why I chose a piece of the game Cuphead! I've made a previous C++ version of it, so why not now showing that I can remake a little part in Flame?
  
  If you have any questions, please don't hesitate to contact me!
+
+ # Instructions:
+ WASD- to move, SPACE to jump. (If you are on the top of the walking area and walk up, you automaticly jump. This is just to make it a little bit harder.)
+ 
+ Press 'E' to shoot. 
+
+ The balloons have 5 hp, but if you can kill one you get +100 score.
+
+ Reach 5000 points to win! Or get 0 HP to lose...
+
+ Have fun! :)
 
  # Planning:
  - Setting up Flame: 30m
