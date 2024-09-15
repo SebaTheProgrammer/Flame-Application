@@ -11,7 +11,7 @@
  - Setting up Flame: 30m
 (I've never worked with it before. It was nice to learn a new engine.)
  
- - Designing/planning scope: 5m
+ - Designing/planning scope: 10m
  
  - Making base character: 30m || took around 40m
  - Healthcomponent: 20m || took around 10m
@@ -28,5 +28,8 @@
 
  - Sound: 40m || took around 1h 20m
 
- - TODO: read checklist again and add particles, ect.
+ - Bugs/code clean-up: 30m
+
+ - Total estimated: +-4:30
+ - Total time it took: +-5h
  
