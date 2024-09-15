@@ -1,8 +1,8 @@
+import 'package:Cuphead_application/TheGame/Entities/Bullet.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/services.dart';
-import 'bullet.dart';
 
 enum CupheadState { run, jump, shoot }
 
@@ -11,43 +11,43 @@ class Cuphead extends FlameGame with HasGameRef {
   late SpriteAnimationComponent _jumpAnimation;
   late SpriteAnimationComponent _shootAnimation;
 
-  int startHealth = 3;
-  int health = 3;
-  double movementSpeed = 300;
-  double movementSpeedLeft = 500;
-  Vector2 startPosition = Vector2(200, 500);
-  Vector2 position = Vector2.zero();
-  static const double gravity = 1700;
-  static const double jumpHeight = -1000;
-  static const double frameTime = 0.06;
-  static const double sizeCuphead = 150;
-  double velocityY = 0;
+  final int _startHealth = 3;
+  int _health = 3;
+  final double _movementSpeed = 300;
+  final double _movementSpeedLeft = 500;
+  final Vector2 _startPosition = Vector2(200, 500);
+  Vector2 _position = Vector2.zero();
+  static const double _gravity = 1700;
+  static const double _jumpHeight = -1000;
+  static const double _frameTime = 0.06;
+  static const double _sizeCuphead = 150;
+  double _velocityY = 0;
 
-  static const double timeBetweenShots = 0.5;
-  double lastShotTime = 0;
+  static const double _timeBetweenShots = 0.5;
+  double _lastShotTime = 0;
 
-  bool isJumping = false;
-  bool isShooting = false;
-  bool isLookingLeft = false;
+  bool _isJumping = false;
+  bool _isShooting = false;
+  bool _isLookingLeft = false;
 
-  static const int spriteSheetColumnsRun = 4;
-  static const int spriteSheetRowsRun = 4;
-  static const int spriteSheetColumnsJump = 3;
-  static const int spriteSheetRowsJump = 3;
-  static const int spriteSheetColumnsShoot = 4;
-  static const int spriteSheetRowsShoot = 4;
+  static const int _spriteSheetColumnsRun = 4;
+  static const int _spriteSheetRowsRun = 4;
+  static const int _spriteSheetColumnsJump = 3;
+  static const int _spriteSheetRowsJump = 3;
+  static const int _spriteSheetColumnsShoot = 4;
+  static const int _spriteSheetRowsShoot = 4;
 
-  static const double minY = 475;
-  static const double maxY = 800;
+  static const double _minY = 475;
+  static const double _maxY = 800;
 
-  CupheadState currentState = CupheadState.run;
+  CupheadState _currentState = CupheadState.run;
 
   int getHealth() {
-    return health;
+    return _health;
   }
 
   void setHealth(int newhealth) {
-    health = newhealth;
+    _health = newhealth;
   }
 
   @override
@@ -55,64 +55,64 @@ class Cuphead extends FlameGame with HasGameRef {
     super.update(dt);
 
     // Handle different states
-    switch (currentState) {
+    switch (_currentState) {
       case CupheadState.jump:
-        velocityY += gravity * dt;
-        _jumpAnimation.position.y += velocityY * dt;
-        if (_jumpAnimation.position.y >= position.y) {
-          _jumpAnimation.position.y = position.y;
-          isJumping = false;
-          velocityY = 0;
-          changeState(CupheadState.run);
+        _velocityY += _gravity * dt;
+        _jumpAnimation.position.y += _velocityY * dt;
+        if (_jumpAnimation.position.y >= _position.y) {
+          _jumpAnimation.position.y = _position.y;
+          _isJumping = false;
+          _velocityY = 0;
+          _changeState(CupheadState.run);
         }
         break;
 
       case CupheadState.run:
-        _runAnimation.position = position;
+        _runAnimation.position = _position;
         break;
 
       case CupheadState.shoot:
-        _shootAnimation.position = position;
+        _shootAnimation.position = _position;
         break;
     }
 
-    if (position.y < minY) {
-      position.y = minY;
+    if (_position.y < _minY) {
+      _position.y = _minY;
     }
-    if (position.y > maxY) {
-      position.y = maxY;
+    if (_position.y > _maxY) {
+      _position.y = _maxY;
     }
-    if (position.x < 0) {
-      position.x = 0;
+    if (_position.x < 0) {
+      _position.x = 0;
     }
-    if (position.x > size.x) {
-      position.x = size.x;
+    if (_position.x > size.x) {
+      _position.x = size.x;
     }
   }
 
-  void move(Vector2 delta) {
-    position += delta;
-    _runAnimation.position = position;
-    _shootAnimation.position = position;
+  void _move(Vector2 delta) {
+    _position += delta;
+    _runAnimation.position = _position;
+    _shootAnimation.position = _position;
 
-    if (!isJumping) {
-      _jumpAnimation.position = position;
+    if (!_isJumping) {
+      _jumpAnimation.position = _position;
     } else {
-      _jumpAnimation.position.x = position.x;
+      _jumpAnimation.position.x = _position.x;
     }
   }
 
   // Timewise I didn't make an inputmanager class
   void handleMovement(Set<LogicalKeyboardKey> pressedKeys, double dt) {
     final Vector2 movement = Vector2.zero();
-    final double speed = movementSpeed * dt;
+    final double speed = _movementSpeed * dt;
     final currentTime = gameRef.currentTime();
 
     if (pressedKeys.contains(LogicalKeyboardKey.keyW)) {
-      if (position.y > minY) {
+      if (_position.y > _minY) {
         movement.y -= speed;
       } else {
-        jump();
+        _jump();
       }
     }
     if (pressedKeys.contains(LogicalKeyboardKey.keyS)) {
@@ -120,40 +120,40 @@ class Cuphead extends FlameGame with HasGameRef {
     }
     if (pressedKeys.contains(LogicalKeyboardKey.keyA)) {
       //design wise so with the paralax you can see the character moving
-      final double leftSpeed = movementSpeedLeft * dt;
+      final double leftSpeed = _movementSpeedLeft * dt;
       movement.x -= leftSpeed;
-      isLookingLeft = true;
+      _isLookingLeft = true;
       _runAnimation.scale.x = -1;
       _jumpAnimation.scale.x = -1;
       _shootAnimation.scale.x = -1;
     }
     if (pressedKeys.contains(LogicalKeyboardKey.keyD)) {
       movement.x += speed;
-      isLookingLeft = false;
+      _isLookingLeft = false;
       _runAnimation.scale.x = 1;
       _jumpAnimation.scale.x = 1;
       _shootAnimation.scale.x = 1;
     }
     if (pressedKeys.contains(LogicalKeyboardKey.space)) {
-      jump();
+      _jump();
     }
     if (pressedKeys.contains(LogicalKeyboardKey.keyE)) {
-      shoot(currentTime);
+      _shoot(currentTime);
     } else {
-      if (isShooting && currentState == CupheadState.shoot) {
-        isShooting = false;
-        changeState(CupheadState.run);
+      if (_isShooting && _currentState == CupheadState.shoot) {
+        _isShooting = false;
+        _changeState(CupheadState.run);
       }
     }
 
     if (movement != Vector2.zero()) {
-      move(movement);
+      _move(movement);
     }
   }
 
   // Change state and update animations
-  void changeState(CupheadState newState) {
-    switch (currentState) {
+  void _changeState(CupheadState newState) {
+    switch (_currentState) {
       case CupheadState.run:
         remove(_runAnimation);
         break;
@@ -165,9 +165,9 @@ class Cuphead extends FlameGame with HasGameRef {
         break;
     }
 
-    currentState = newState;
+    _currentState = newState;
 
-    switch (currentState) {
+    switch (_currentState) {
       case CupheadState.run:
         add(_runAnimation);
         break;
@@ -180,18 +180,18 @@ class Cuphead extends FlameGame with HasGameRef {
     }
   }
 
-  void jump() {
-    if (!isJumping) {
-      isJumping = true;
-      velocityY = jumpHeight;
-      changeState(CupheadState.jump);
+  void _jump() {
+    if (!_isJumping) {
+      _isJumping = true;
+      _velocityY = _jumpHeight;
+      _changeState(CupheadState.jump);
     }
   }
 
-  void shoot(double currentTime) async {
-    if (!isJumping && (currentTime - lastShotTime) >= timeBetweenShots) {
-      isShooting = true;
-      changeState(CupheadState.shoot);
+  void _shoot(double currentTime) async {
+    if (!_isJumping && (currentTime - _lastShotTime) >= _timeBetweenShots) {
+      _isShooting = true;
+      _changeState(CupheadState.shoot);
 
       final spriteSheet = SpriteSheet(
         image: await images.load('Bullet.png'),
@@ -206,21 +206,22 @@ class Cuphead extends FlameGame with HasGameRef {
 
       final bullet = Bullet(
           position: Vector2(
-              position.x + (isLookingLeft ? sizeCuphead / 4 : -sizeCuphead / 4),
-              position.y),
+              _position.x +
+                  (_isLookingLeft ? _sizeCuphead / 4 : -_sizeCuphead / 4),
+              _position.y),
           size: Vector2(100, 50),
           animation: bulletAnimation,
-          isFacingLeft: isLookingLeft);
+          isFacingLeft: _isLookingLeft);
 
       add(bullet);
 
-      lastShotTime = currentTime;
+      _lastShotTime = currentTime;
     }
   }
 
   Rect toRect() {
-    if (!isJumping) {
-      return Rect.fromLTWH(position.x, position.y, 20, 40);
+    if (!_isJumping) {
+      return Rect.fromLTWH(_position.x, _position.y, 20, 40);
     } else {
       return Rect.fromLTWH(
           _jumpAnimation.position.x, _jumpAnimation.position.y, 20, 40);
@@ -228,21 +229,21 @@ class Cuphead extends FlameGame with HasGameRef {
   }
 
   void resetCuphead() {
-    position = startPosition;
-    health = startHealth;
-    _runAnimation.position = position;
-    _jumpAnimation.position = position;
-    _shootAnimation.position = position;
-    changeState(CupheadState.run);
-    isLookingLeft = false;
-    isJumping = false;
+    _position = _startPosition;
+    _health = _startHealth;
+    _runAnimation.position = _position;
+    _jumpAnimation.position = _position;
+    _shootAnimation.position = _position;
+    _changeState(CupheadState.run);
+    _isLookingLeft = false;
+    _isJumping = false;
   }
 
   @override
   Future<void> onLoad() async {
-    position = startPosition;
+    _position = _startPosition;
     // Helper function to create animations
-    Future<SpriteAnimationComponent> createAnimation(
+    Future<SpriteAnimationComponent> _createAnimation(
         String fileName, int rows, int columns, double size,
         {double? adjustedSize, int? totalSprites}) async {
       final spriteSheetImage = await images.load('$fileName.png');
@@ -267,26 +268,26 @@ class Cuphead extends FlameGame with HasGameRef {
 
       final animation = SpriteAnimation.spriteList(
         sprites,
-        stepTime: frameTime,
+        stepTime: _frameTime,
         loop: true,
       );
 
       return SpriteAnimationComponent()
         ..animation = animation
         ..size = Vector2.all(adjustedSize ?? size)
-        ..position = position
+        ..position = _position
         ..anchor = Anchor.center;
     }
 
-    _runAnimation = await createAnimation(
-        'Run', spriteSheetRowsRun, spriteSheetColumnsRun, sizeCuphead);
+    _runAnimation = await _createAnimation(
+        'Run', _spriteSheetRowsRun, _spriteSheetColumnsRun, _sizeCuphead);
     add(_runAnimation);
 
-    _jumpAnimation = await createAnimation(
-        'Jump', spriteSheetRowsJump, spriteSheetColumnsJump, sizeCuphead,
-        adjustedSize: sizeCuphead - 30, totalSprites: 8);
+    _jumpAnimation = await _createAnimation(
+        'Jump', _spriteSheetRowsJump, _spriteSheetColumnsJump, _sizeCuphead,
+        adjustedSize: _sizeCuphead - 30, totalSprites: 8);
 
-    _shootAnimation = await createAnimation(
-        'Shoot', spriteSheetRowsShoot, spriteSheetColumnsShoot, sizeCuphead);
+    _shootAnimation = await _createAnimation(
+        'Shoot', _spriteSheetRowsShoot, _spriteSheetColumnsShoot, _sizeCuphead);
   }
 }

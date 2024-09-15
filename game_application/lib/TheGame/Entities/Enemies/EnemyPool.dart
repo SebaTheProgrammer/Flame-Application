@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
-import 'package:Cuphead_application/TheGame/Balloon.dart';
+import 'package:Cuphead_application/TheGame/Entities/Enemies/Balloon.dart';
 
 class BalloonPool {
   final List<Balloon> _pool = [];
@@ -24,6 +24,9 @@ class BalloonPool {
 
   Balloon _createBalloon() {
     return Balloon(
+      hp: 5,
+      damage: 1,
+      score: 100,
       position: Vector2.zero(),
       size: Vector2(200, 200),
       animation: _defaultAnimation,

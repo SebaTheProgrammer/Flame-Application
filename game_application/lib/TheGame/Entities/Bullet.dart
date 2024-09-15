@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 class Bullet extends SpriteAnimationComponent with HasGameRef {
-  final double speed;
+  final double _speed = 500;
   bool isOffScreen = false;
   bool isFacingLeft;
 
@@ -10,7 +10,6 @@ class Bullet extends SpriteAnimationComponent with HasGameRef {
     required Vector2 position,
     required Vector2 size,
     required SpriteAnimation animation,
-    this.speed = 500,
     required this.isFacingLeft,
   }) : super(position: position, size: size, animation: animation) {
     if (isFacingLeft) {
@@ -24,9 +23,9 @@ class Bullet extends SpriteAnimationComponent with HasGameRef {
     super.update(dt);
 
     if (isFacingLeft) {
-      position.x -= speed * dt;
+      position.x -= _speed * dt;
     } else {
-      position.x += speed * dt;
+      position.x += _speed * dt;
     }
 
     if (position.x < 0 || position.x > gameRef.size.x) {
@@ -37,6 +36,6 @@ class Bullet extends SpriteAnimationComponent with HasGameRef {
 
   @override
   Rect toRect() {
-    return Rect.fromLTWH(position.x, position.y, 300, 200);
+    return Rect.fromLTWH(position.x, position.y, 100, 100);
   }
 }

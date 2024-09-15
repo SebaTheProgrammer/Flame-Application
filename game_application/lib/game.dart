@@ -1,10 +1,11 @@
-import 'package:Cuphead_application/TheGame/Balloon.dart';
-import 'package:Cuphead_application/TheGame/Bullet.dart';
-import 'package:Cuphead_application/TheGame/Cuphead.dart';
-import 'package:Cuphead_application/TheGame/HealthComponent.dart';
-import 'package:Cuphead_application/TheGame/Paralax.dart';
-import 'package:Cuphead_application/TheGame/EnemySpawner.dart';
-import 'package:Cuphead_application/TheGame/SoundManager.dart';
+import 'package:Cuphead_application/TheGame/Components/ScoreComponent.dart';
+import 'package:Cuphead_application/TheGame/Entities/Enemies/Balloon.dart';
+import 'package:Cuphead_application/TheGame/Entities/Bullet.dart';
+import 'package:Cuphead_application/TheGame/Entities/Cuphead.dart';
+import 'package:Cuphead_application/TheGame/Components/HealthComponent.dart';
+import 'package:Cuphead_application/TheGame/Extra/Paralax.dart';
+import 'package:Cuphead_application/TheGame/Entities/Enemies/EnemySpawner.dart';
+import 'package:Cuphead_application/TheGame/Extra/SoundManager.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,9 @@ class CupheadGame extends FlameGame with KeyboardEvents {
   late ParallaxForeground _parallaxForeground;
   late HealthComponent _healthComponent;
   late EnemySpawner _enemySpawner;
+  late ScoreComponent scoreComponent;
+
+  final double _scoreToWin = 5000;
 
   final Set<LogicalKeyboardKey> _pressedKeys = {};
   bool isGamePaused = false;
@@ -30,7 +34,7 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     _parallax = ParallaxBackground();
     _parallaxForeground = ParallaxForeground();
     _healthComponent = HealthComponent(images);
-
+    scoreComponent = ScoreComponent()..position = Vector2(size.x / 2, 10);
     _enemySpawner = EnemySpawner(screenSize: size, images: images);
 
     add(_parallax);
@@ -38,6 +42,7 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     add(_enemySpawner);
     add(_parallaxForeground);
     add(_healthComponent);
+    add(scoreComponent);
 
     await _healthComponent.onLoad();
     _healthComponent
@@ -52,11 +57,12 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     super.update(dt);
     _cuphead.handleMovement(_pressedKeys, dt);
     checkCollisions();
+    checkScore();
 
     //because of the large sound file, it will only play after 10 seconds, playing when done loading doesn't work ://
     if (time > 10 && test) {
       test = false;
-      SoundManager.instance.playSound('Level.mp3');
+      //SoundManager.instance.playSound('Level.mp3');
     }
   }
 
@@ -80,14 +86,13 @@ class CupheadGame extends FlameGame with KeyboardEvents {
       final balloonRect = balloon.toRect();
 
       if (cupheadRect.overlaps(balloonRect)) {
-        _cuphead
-            .setHealth(_cuphead.getHealth() - 1); //or getDamage() from enemy
+        _cuphead.setHealth(_cuphead.getHealth() - balloon.damageDealt);
         _healthComponent
             .updateHealth(_cuphead.getHealth() + 2); //+2 for spritesheet
-        balloon.kill();
+        balloon.playerHit();
 
         if (_cuphead.getHealth() == 0) {
-          pauseGame();
+          loseGame();
         }
       }
 
@@ -96,15 +101,31 @@ class CupheadGame extends FlameGame with KeyboardEvents {
 
         if (bulletRect.overlaps(balloonRect)) {
           bullet.removeFromParent();
-          balloon.kill();
+          balloon.hit();
+          scoreComponent.addscore(balloon.scoreWorth);
         }
       }
     }
   }
 
+  void checkScore() {
+    if (scoreComponent.score >= _scoreToWin) {
+      winGame();
+    }
+  }
+
+  void winGame() {
+    pauseGame();
+    overlays.add('WinButton');
+  }
+
+  void loseGame() {
+    pauseGame();
+    overlays.add('RestartButton');
+  }
+
   void pauseGame() {
     isGamePaused = true;
-    overlays.add('RestartButton');
     pauseEngine();
   }
 
@@ -121,8 +142,11 @@ class CupheadGame extends FlameGame with KeyboardEvents {
 
     _pressedKeys.clear();
 
+    scoreComponent.resetScore();
+
     isGamePaused = false;
     overlays.remove('RestartButton');
+    overlays.remove('WinButton');
     resumeEngine();
   }
 }

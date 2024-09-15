@@ -18,6 +18,16 @@ void main() {
             ),
           );
         },
+        'WinButton': (BuildContext context, CupheadGame game) {
+          return Center(
+            child: ElevatedButton(
+              onPressed: () {
+                game.restartGame();
+              },
+              child: Text('You Win! Restart?'),
+            ),
+          );
+        },
       },
       initialActiveOverlays: const [],
     ),

@@ -1,12 +1,12 @@
 import 'dart:math';
-import 'package:Cuphead_application/TheGame/EnemyPool.dart';
+import 'package:Cuphead_application/TheGame/Entities/Enemies/EnemyPool.dart';
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 
 class EnemySpawner extends Component {
   final Vector2 screenSize;
-  final double spawnInterval;
-  double timeSinceLastSpawn = 0;
+  final double _spawnInterval = 2.0;
+  double _timeSinceLastSpawn = 0;
   final Random _random = Random();
   final Images images;
 
@@ -18,7 +18,6 @@ class EnemySpawner extends Component {
 
   EnemySpawner({
     required this.screenSize,
-    this.spawnInterval = 3.0,
     required this.images,
   });
 
@@ -55,11 +54,11 @@ class EnemySpawner extends Component {
   void update(double dt) {
     super.update(dt);
 
-    timeSinceLastSpawn += dt;
+    _timeSinceLastSpawn += dt;
 
-    if (timeSinceLastSpawn >= spawnInterval) {
+    if (_timeSinceLastSpawn >= _spawnInterval) {
       spawnBalloon();
-      timeSinceLastSpawn = 0;
+      _timeSinceLastSpawn = 0;
     }
   }
 

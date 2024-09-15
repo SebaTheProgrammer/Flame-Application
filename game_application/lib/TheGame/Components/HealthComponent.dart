@@ -4,26 +4,26 @@ import 'package:flame/sprite.dart';
 
 class HealthComponent extends PositionComponent {
   late SpriteComponent _healthSprite;
-  late List<Sprite> healthSprites;
-  double sizeHealth = 50;
-  Vector2 pos = Vector2(25, 25);
-  final Images images;
+  late List<Sprite> _healthSprites;
+  final double _sizeHealth = 50;
+  final Vector2 _pos = Vector2(25, 25);
+  final Images _images;
 
-  HealthComponent(this.images);
+  HealthComponent(this._images);
 
   Future<void> updateHealth(int index) async {
-    if (index >= 0 && index < healthSprites.length) {
+    if (index >= 0 && index < _healthSprites.length) {
       if (index == 2) {
-        _healthSprite.sprite = healthSprites[0];
+        _healthSprite.sprite = _healthSprites[0];
       } else {
-        _healthSprite.sprite = healthSprites[index];
+        _healthSprite.sprite = _healthSprites[index];
       }
     }
   }
 
   @override
   Future<void> onLoad() async {
-    final spriteSheetImageHealth = await images.load('Health.png');
+    final spriteSheetImageHealth = await _images.load('Health.png');
     final double frameWidth = spriteSheetImageHealth.width / 6;
     final double frameHeight = spriteSheetImageHealth.height / 2;
     final spriteSheetHealth = SpriteSheet(
@@ -31,17 +31,17 @@ class HealthComponent extends PositionComponent {
       srcSize: Vector2(frameWidth, frameHeight),
     );
 
-    healthSprites = [];
+    _healthSprites = [];
     for (int row = 0; row < 2; row++) {
       for (int column = 0; column < 6; column++) {
-        healthSprites.add(spriteSheetHealth.getSprite(row, column));
+        _healthSprites.add(spriteSheetHealth.getSprite(row, column));
       }
     }
 
     _healthSprite = SpriteComponent()
-      ..sprite = healthSprites[0]
-      ..size = Vector2(sizeHealth * 2, sizeHealth)
-      ..position = pos;
+      ..sprite = _healthSprites[0]
+      ..size = Vector2(_sizeHealth * 2, _sizeHealth)
+      ..position = _pos;
 
     add(_healthSprite);
   }

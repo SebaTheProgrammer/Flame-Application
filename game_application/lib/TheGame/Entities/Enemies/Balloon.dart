@@ -12,7 +12,14 @@ class Balloon extends SpriteAnimationComponent {
   late double speed;
   late bool isDead;
 
+  late int _health;
+  late int _damageDealt;
+  late int _scoreWorth;
+
   Balloon({
+    required int hp,
+    required int damage,
+    required int score,
     required Vector2 position,
     required Vector2 size,
     required SpriteAnimation animation,
@@ -28,7 +35,14 @@ class Balloon extends SpriteAnimationComponent {
         ) {
     isDead = false;
     time = 0;
+    _health = hp;
+    _damageDealt = damage;
+    _scoreWorth = score;
   }
+
+  int get damageDealt => _damageDealt;
+  int get scoreWorth => _scoreWorth;
+  int get health => _health;
 
   @override
   void update(double dt) {
@@ -48,7 +62,18 @@ class Balloon extends SpriteAnimationComponent {
     }
   }
 
-  void kill() {
+  void hit() {
+    _health -= 1;
+    if (_health == 0) {
+      die();
+    }
+  }
+
+  void playerHit() {
+    die();
+  }
+
+  void die() {
     isDead = true;
 
     final paint = Paint()..color = Color(0xFFFF0000);
