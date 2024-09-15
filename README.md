@@ -1,4 +1,4 @@
-# Flame Application Internship
+# Flame Application Test for Internship
  This is a small 2D-web-game for a coding test for a possible amazing internship at The Dutch Game Studio!
  
  I can only work a maximum of 8 hours on this, so the scope will be pretty small. (I also just arrived on Erasmus, but I tried to make time for this!)
