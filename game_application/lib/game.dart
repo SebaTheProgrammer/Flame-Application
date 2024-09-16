@@ -1,15 +1,17 @@
-import 'package:Cuphead_application/TheGame/Components/ScoreComponent.dart';
-import 'package:Cuphead_application/TheGame/Entities/Enemies/Balloon.dart';
-import 'package:Cuphead_application/TheGame/Entities/Bullet.dart';
-import 'package:Cuphead_application/TheGame/Entities/Cuphead.dart';
-import 'package:Cuphead_application/TheGame/Components/HealthComponent.dart';
-import 'package:Cuphead_application/TheGame/Extra/Paralax.dart';
-import 'package:Cuphead_application/TheGame/Entities/Enemies/EnemySpawner.dart';
-import 'package:Cuphead_application/TheGame/Extra/SoundManager.dart';
+import 'package:Cuphead_application/bloc/game_bloc.dart';
+import 'package:Cuphead_application/the_game/components/health_component.dart';
+import 'package:Cuphead_application/the_game/components/score_component.dart';
+import 'package:Cuphead_application/the_game/entities/bullet.dart';
+import 'package:Cuphead_application/the_game/entities/cuphead.dart';
+import 'package:Cuphead_application/the_game/entities/enemies/balloon.dart';
+import 'package:Cuphead_application/the_game/entities/enemies/enemy_spawner.dart';
+import 'package:Cuphead_application/the_game/extra/paralax.dart';
+import 'package:Cuphead_application/the_game/extra/sound_manager.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flame/input.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CupheadGame extends FlameGame with KeyboardEvents {
   late Cuphead _cuphead;
@@ -20,11 +22,15 @@ class CupheadGame extends FlameGame with KeyboardEvents {
   late ScoreComponent scoreComponent;
 
   final double _scoreToWin = 5000;
+  final BuildContext context;
+
+  bool isGamePaused = false;
 
   final Set<LogicalKeyboardKey> _pressedKeys = {};
-  bool isGamePaused = false;
   double time = 0;
   bool test = true;
+
+  CupheadGame({required this.context});
 
   @override
   Future<void> onLoad() async {
@@ -35,7 +41,8 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     _parallaxForeground = ParallaxForeground();
     _healthComponent = HealthComponent(images);
     scoreComponent = ScoreComponent()..position = Vector2(size.x / 2, 10);
-    _enemySpawner = EnemySpawner(screenSize: size, images: images);
+    _enemySpawner = EnemySpawner(
+        scoreComponent: scoreComponent, screenSize: size, images: images);
 
     add(_parallax);
     add(_cuphead);
@@ -51,7 +58,10 @@ class CupheadGame extends FlameGame with KeyboardEvents {
 
   @override
   void update(double dt) {
-    if (isGamePaused) return;
+    final gameBloc = BlocProvider.of<GameBloc>(context);
+
+    if (gameBloc.state is GamePaused) return;
+
     time += dt;
 
     super.update(dt);
@@ -68,7 +78,10 @@ class CupheadGame extends FlameGame with KeyboardEvents {
 
   @override
   KeyEventResult onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keys) {
-    if (isGamePaused) return KeyEventResult.handled;
+    final gameBloc = BlocProvider.of<GameBloc>(context);
+
+    if (gameBloc.state is GamePaused) return KeyEventResult.handled;
+
     super.onKeyEvent(event, keys);
     if (event is KeyDownEvent) {
       _pressedKeys.add(event.logicalKey);
@@ -92,7 +105,8 @@ class CupheadGame extends FlameGame with KeyboardEvents {
         balloon.playerHit();
 
         if (_cuphead.getHealth() == 0) {
-          loseGame();
+          pauseGame();
+          overlays.add('RestartButton');
         }
       }
 
@@ -102,7 +116,6 @@ class CupheadGame extends FlameGame with KeyboardEvents {
         if (bulletRect.overlaps(balloonRect)) {
           bullet.removeFromParent();
           balloon.hit();
-          scoreComponent.addscore(balloon.scoreWorth);
         }
       }
     }
@@ -110,23 +123,9 @@ class CupheadGame extends FlameGame with KeyboardEvents {
 
   void checkScore() {
     if (scoreComponent.score >= _scoreToWin) {
-      winGame();
+      pauseGame();
+      overlays.add('WinButton');
     }
-  }
-
-  void winGame() {
-    pauseGame();
-    overlays.add('WinButton');
-  }
-
-  void loseGame() {
-    pauseGame();
-    overlays.add('RestartButton');
-  }
-
-  void pauseGame() {
-    isGamePaused = true;
-    pauseEngine();
   }
 
   void restartGame() {
@@ -148,5 +147,10 @@ class CupheadGame extends FlameGame with KeyboardEvents {
     overlays.remove('RestartButton');
     overlays.remove('WinButton');
     resumeEngine();
+  }
+
+  void pauseGame() {
+    isGamePaused = true;
+    pauseEngine();
   }
 }

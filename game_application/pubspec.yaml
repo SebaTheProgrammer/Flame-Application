@@ -11,7 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   flame: ^1.19.0
+  flame_bloc: ^1.12.1
   cupertino_icons: ^1.0.8
+  flutter_bloc: ^8.0.0
+  bloc: ^8.0.0
 
   # The following line adds Flame from GitHub. You should use either the versioned package or the GitHub package, not both.
   # Remove one of these lines based on your need:
