@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:Cuphead_application/the_game/components/score_component.dart';
 import 'package:Cuphead_application/the_game/extra/sound_manager.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,9 @@ class Balloon extends SpriteAnimationComponent {
   late int _health;
   late int _damageDealt;
   late int _scoreWorth;
+
+  final int flyHeight = 200;
+  final double flyTime = 1;
 
   late ScoreComponent _scoreComponent;
 
@@ -87,6 +91,14 @@ class Balloon extends SpriteAnimationComponent {
     }
     isDead = true;
     scoreComponent.addscore(scoreWorth);
+
+    final moveEffect = MoveToEffect(
+      Vector2(position.x, position.y - flyHeight),
+      EffectController(duration: flyTime),
+    );
+
+    add(moveEffect);
+
     SoundManager.instance.playSoundEffect('BalloonDeath.wav');
     // Spawn particles/blood
     final paint = Paint()..color = Color(0xFFFF0000);

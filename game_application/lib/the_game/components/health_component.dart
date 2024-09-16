@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
@@ -41,7 +43,12 @@ class HealthComponent extends PositionComponent {
     _healthSprite = SpriteComponent()
       ..sprite = _healthSprites[0]
       ..size = Vector2(_sizeHealth * 2, _sizeHealth)
-      ..position = _pos;
+      ..position = _pos
+      ..paint = Paint()
+      ..paint.colorFilter = const ColorFilter.mode(
+        Color(0xFF808080),
+        BlendMode.saturation,
+      );
 
     add(_healthSprite);
   }
