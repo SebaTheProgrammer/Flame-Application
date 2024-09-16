@@ -19,8 +19,8 @@ class Balloon extends SpriteAnimationComponent {
   late int _damageDealt;
   late int _scoreWorth;
 
-  final int flyHeight = 200;
-  final double flyTime = 1;
+  final int _flyHeight = 200;
+  final double _flyTime = 1;
 
   late ScoreComponent _scoreComponent;
 
@@ -67,7 +67,12 @@ class Balloon extends SpriteAnimationComponent {
     }
 
     time += dt;
-    position.y = minY + amplitude * sin(frequency * time);
+
+    //custom spatial transformation with matrices
+    final Matrix4 transformationMatrix = Matrix4.identity()
+      ..translate(0, amplitude * sin(frequency * time), 0);
+
+    position.y = minY + transformationMatrix.getTranslation().y;
 
     if (position.x < -size.x) {
       removeFromParent();
@@ -93,15 +98,15 @@ class Balloon extends SpriteAnimationComponent {
     scoreComponent.addscore(scoreWorth);
 
     final moveEffect = MoveToEffect(
-      Vector2(position.x, position.y - flyHeight),
-      EffectController(duration: flyTime),
+      Vector2(position.x, position.y - _flyHeight),
+      EffectController(duration: _flyTime),
     );
 
     add(moveEffect);
 
     SoundManager.instance.playSoundEffect('BalloonDeath.wav');
-    // Spawn particles/blood
-    final paint = Paint()..color = Color(0xFFFF0000);
+
+    final paint = Paint()..color = const Color(0xFFFF0000);
 
     final particleComponent = ParticleSystemComponent(
       particle: Particle.generate(
@@ -126,7 +131,7 @@ class Balloon extends SpriteAnimationComponent {
 
     add(particleComponent);
 
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(Duration(seconds: _flyTime.toInt()), () {
       removeFromParent();
     });
   }
