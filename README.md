@@ -1,5 +1,5 @@
-# Flame Application Internship
- This is a small 2D-web-game for a coding test for a possible amazing internship at the Dutch Game Studio!
+# Flame Application Test for Internship
+ This is a small 2D-web-game for a coding test for a possible amazing internship at The Dutch Game Studio! https://dutchgamestudio.com/
  
  I can only work a maximum of 8 hours on this, so the scope will be pretty small. (I also just arrived on Erasmus, but I tried to make time for this!)
 
@@ -7,7 +7,7 @@
  
  If you have any questions, please don't hesitate to contact me!
 
- https://sebatheprogrammer.github.io/
+ The game: -> https://sebatheprogrammer.github.io/
 
  # Instructions:
  WASD- to move, SPACE to jump. (If you are on the top of the walking area and walk up, you automaticly jump. This is just to make it a little bit harder.)
@@ -43,6 +43,8 @@
 
  - Bugs/code clean-up: 30m
 
- - Total estimated: +-4:30
- - Total time it took: +-5h
+ - Publishing Build 10m || 20m
+
+ - Total estimated: +-4:50
+ - Total time it took: +-5:30h
  
