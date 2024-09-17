@@ -1,5 +1,5 @@
 import 'package:Cuphead_application/the_game/components/score_component.dart';
-import 'package:Cuphead_application/the_game/entities/enemies/enemie_strategies.dart';
+import 'package:Cuphead_application/the_game/entities/enemies/enemy_strategies.dart';
 import 'package:flame/components.dart';
 import 'package:Cuphead_application/the_game/entities/enemies/balloon.dart';
 
