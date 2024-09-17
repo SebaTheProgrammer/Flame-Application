@@ -2,7 +2,7 @@ import 'package:Cuphead_application/bloc/game_bloc.dart';
 import 'package:Cuphead_application/the_game/components/health_component.dart';
 import 'package:Cuphead_application/the_game/components/score_component.dart';
 import 'package:Cuphead_application/the_game/entities/bullet.dart';
-import 'package:Cuphead_application/the_game/entities/cuphead.dart';
+import 'package:Cuphead_application/the_game/entities/player/cuphead.dart';
 import 'package:Cuphead_application/the_game/entities/enemies/balloon.dart';
 import 'package:Cuphead_application/the_game/entities/enemies/enemy_spawner.dart';
 import 'package:Cuphead_application/the_game/extra/paralax.dart';
@@ -21,7 +21,7 @@ class CupheadGame extends FlameGame with KeyboardEvents {
   late EnemySpawner _enemySpawner;
   late ScoreComponent scoreComponent;
 
-  final double _scoreToWin = 5000;
+  final double _scoreToWin = 2000;
   final BuildContext context;
 
   bool isGamePaused = false;
