@@ -1,9 +1,8 @@
 import 'dart:math';
 import 'package:Cuphead_application/the_game/components/score_component.dart';
-import 'package:Cuphead_application/the_game/extra/sound_manager.dart';
+import 'package:Cuphead_application/the_game/entities/enemies/enemie_strategies.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 
 class Balloon extends SpriteAnimationComponent {
@@ -23,6 +22,7 @@ class Balloon extends SpriteAnimationComponent {
   final double _flyTime = 1;
 
   late ScoreComponent _scoreComponent;
+  late List<DeathStrategy> deathStrategies;
 
   Balloon({
     required ScoreComponent scoreComponent,
@@ -37,6 +37,7 @@ class Balloon extends SpriteAnimationComponent {
     required this.maxY,
     required this.minY,
     required this.speed,
+    this.deathStrategies = const [],
   }) : super(
           position: position,
           size: size,
@@ -95,41 +96,16 @@ class Balloon extends SpriteAnimationComponent {
       return;
     }
     isDead = true;
-    scoreComponent.addscore(scoreWorth);
+
+    for (final strategy in deathStrategies) {
+      strategy.execute(this);
+    }
 
     final moveEffect = MoveToEffect(
       Vector2(position.x, position.y - _flyHeight),
       EffectController(duration: _flyTime),
     );
-
     add(moveEffect);
-
-    SoundManager.instance.playSoundEffect('BalloonDeath.wav');
-
-    final paint = Paint()..color = const Color(0xFFFF0000);
-
-    final particleComponent = ParticleSystemComponent(
-      particle: Particle.generate(
-        count: 25,
-        lifespan: 1.0,
-        generator: (i) {
-          final initialPosition = Vector2(75, 75);
-          final speed = (Vector2.random() - Vector2.all(0.5)) * 100;
-
-          return ComputedParticle(
-            lifespan: 1.0,
-            renderer: (canvas, particleLifespan) {
-              final position =
-                  initialPosition + speed * particleLifespan.progress;
-
-              canvas.drawCircle(Offset(position.x, position.y), 15, paint);
-            },
-          );
-        },
-      ),
-    );
-
-    add(particleComponent);
 
     Future.delayed(Duration(seconds: _flyTime.toInt()), () {
       removeFromParent();

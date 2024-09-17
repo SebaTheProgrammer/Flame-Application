@@ -1,6 +1,6 @@
 import 'package:Cuphead_application/the_game/components/score_component.dart';
+import 'package:Cuphead_application/the_game/entities/enemies/enemie_strategies.dart';
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
 import 'package:Cuphead_application/the_game/entities/enemies/balloon.dart';
 
 class BalloonPool {
@@ -38,6 +38,11 @@ class BalloonPool {
       maxY: 0,
       minY: 0,
       speed: 0,
+      deathStrategies: [
+        ScoreDeathStrategy(),
+        SoundDeathStrategy(),
+        ParticleDeathStrategy(),
+      ],
     );
   }
 }
