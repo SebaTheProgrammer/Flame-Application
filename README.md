@@ -10,7 +10,7 @@
  The game: -> https://sebatheprogrammer.github.io/
 
  # Instructions:
- WASD- to move, SPACE to jump. (If you are on the top of the walking area and walk up, you automaticly jump. This is just to make it a little bit harder.)
+ WASD- to move, SPACE to jump
  
  Press 'E' to shoot. 
 
