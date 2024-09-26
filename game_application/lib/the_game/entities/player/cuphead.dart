@@ -66,8 +66,6 @@ class Cuphead extends FlameGame with HasGameRef {
     if (pressedKeys.contains(LogicalKeyboardKey.keyW)) {
       if (position.y > minY) {
         movement.y -= speed;
-      } else if (isJumping == false) {
-        changeState(JumpState());
       }
     }
     if (pressedKeys.contains(LogicalKeyboardKey.keyS)) {
